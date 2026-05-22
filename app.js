@@ -17,6 +17,7 @@ const state = {
   searchQuery: '',
   libraryGenreFilter: 'All',
   librarySort: 'rating',
+  kidsMode: false,
   heroIndex: 0,
   selectedMovieId: null,
   userRatings: {},
@@ -113,6 +114,14 @@ function restoreSidebarState() {
   syncSidebarCollapseButton();
 }
 
+function loadPreferences() {
+  try {
+    state.kidsMode = localStorage.getItem('cinefy_kids_mode') === 'true';
+  } catch {
+    state.kidsMode = false;
+  }
+}
+
 function toggleSidebarCollapse() {
   document.body.classList.toggle('sidebar-collapsed');
   localStorage.setItem('cinefy_sidebar_collapsed', document.body.classList.contains('sidebar-collapsed'));
@@ -143,6 +152,12 @@ function loadState() {
     ratings: { ...state.userRatings },
     watchlist: [...state.watchlist]
   };
+}
+
+function savePreferences() {
+  try {
+    localStorage.setItem('cinefy_kids_mode', state.kidsMode ? 'true' : 'false');
+  } catch {}
 }
 
 function saveState() {
@@ -190,6 +205,17 @@ function bindEvents() {
     if (!chip) return;
     setPersona(chip.dataset.persona);
   });
+
+  // Kids mode toggle
+  const kidsToggle = document.getElementById('kids-mode-toggle');
+  if (kidsToggle) {
+    kidsToggle.checked = state.kidsMode;
+    kidsToggle.addEventListener('change', (e) => {
+      state.kidsMode = !!e.target.checked;
+      savePreferences();
+      render();
+    });
+  }
 
   els.genreChips.addEventListener('click', (event) => {
     const chip = event.target.closest('.chip');
@@ -253,6 +279,26 @@ function bindEvents() {
       closeDetail();
     }
   });
+}
+
+function isKidFriendly(movie) {
+  if (!movie) return false;
+  const allowed = new Set(['Family', 'Animation', 'Adventure', 'Fantasy', 'Kids', 'Children']);
+  const blocked = new Set(['Horror', 'Thriller', 'Crime', 'Adult']);
+  const genres = movie.genres || [];
+  // If any blocked genre present, reject
+  if (genres.some((g) => blocked.has(g))) return false;
+  // Accept if any allowed genre present
+  if (genres.some((g) => allowed.has(g))) return true;
+  // fallback: check keywords for kid-friendly hints
+  const keywords = movie.keywords || [];
+  if (keywords.some((k) => ['family','children','kids','animation','cartoon'].includes(k.toLowerCase()))) return true;
+  return false;
+}
+
+function applyKidsFilter(list) {
+  if (!state.kidsMode) return list;
+  return list.filter(isKidFriendly);
 }
 
 function render() {
@@ -442,22 +488,24 @@ function renderPersonaBars() {
 }
 
 function renderMovieRail(container, list, options = {}) {
-  if (!list.length) {
+  const filteredList = applyKidsFilter(list);
+  if (!filteredList.length) {
     container.innerHTML = emptyState('Nothing here yet', 'Rate or save a few movies to tune this row.');
     return;
   }
 
-  container.innerHTML = list.map((movie) => movieCard(movie, options)).join('');
+  container.innerHTML = filteredList.map((movie) => movieCard(movie, options)).join('');
   bindCards(container);
 }
 
 function renderGrid(container, list, title, copy) {
-  if (!list.length) {
+  const filteredList = applyKidsFilter(list);
+  if (!filteredList.length) {
     container.innerHTML = emptyState(title, copy);
     return;
   }
 
-  container.innerHTML = list.map((movie) => movieCard(movie, { grid: true })).join('');
+  container.innerHTML = filteredList.map((movie) => movieCard(movie, { grid: true })).join('');
   bindCards(container);
 }
 
