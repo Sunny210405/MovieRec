@@ -1,0 +1,160 @@
+Exception calling "Write" with "3" argument(s): "Unable to write data to the transport connection: An established 
+connection was aborted by the software in your host machine."
+At C:\Users\janaa\Downloads\MovieRec\tools\dev-server.ps1:60 char:5
++     $stream.Write($bytes, 0, $bytes.Length)
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : IOException
+ 
+Exception calling "Write" with "3" argument(s): "Unable to write data to the transport connection: An established 
+connection was aborted by the software in your host machine."
+At C:\Users\janaa\Downloads\MovieRec\tools\dev-server.ps1:60 char:5
++     $stream.Write($bytes, 0, $bytes.Length)
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : IOException
+ 
+Exception calling "Write" with "3" argument(s): "Unable to write data to the transport connection: An established 
+connection was aborted by the software in your host machine."
+At C:\Users\janaa\Downloads\MovieRec\tools\dev-server.ps1:60 char:5
++     $stream.Write($bytes, 0, $bytes.Length)
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : IOException
+ 
+Exception calling "Write" with "3" argument(s): "Unable to write data to the transport connection: An established 
+connection was aborted by the software in your host machine."
+At C:\Users\janaa\Downloads\MovieRec\tools\dev-server.ps1:60 char:5
++     $stream.Write($bytes, 0, $bytes.Length)
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : IOException
+ 
+Exception calling "Write" with "3" argument(s): "Unable to write data to the transport connection: An established 
+connection was aborted by the software in your host machine."
+At C:\Users\janaa\Downloads\MovieRec\tools\dev-server.ps1:60 char:5
++     $stream.Write($bytes, 0, $bytes.Length)
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : IOException
+ 
+Exception calling "Write" with "3" argument(s): "Unable to write data to the transport connection: An established 
+connection was aborted by the software in your host machine."
+At C:\Users\janaa\Downloads\MovieRec\tools\dev-server.ps1:60 char:5
++     $stream.Write($bytes, 0, $bytes.Length)
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : IOException
+ 
+Exception calling "Write" with "3" argument(s): "Unable to write data to the transport connection: An established 
+connection was aborted by the software in your host machine."
+At C:\Users\janaa\Downloads\MovieRec\tools\dev-server.ps1:60 char:5
++     $stream.Write($bytes, 0, $bytes.Length)
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : IOException
+ 
+Exception calling "Write" with "3" argument(s): "Unable to write data to the transport connection: An established 
+connection was aborted by the software in your host machine."
+At C:\Users\janaa\Downloads\MovieRec\tools\dev-server.ps1:60 char:5
++     $stream.Write($bytes, 0, $bytes.Length)
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : IOException
+ 
+Exception calling "Write" with "3" argument(s): "Unable to write data to the transport connection: An established 
+connection was aborted by the software in your host machine."
+At C:\Users\janaa\Downloads\MovieRec\tools\dev-server.ps1:60 char:5
++     $stream.Write($bytes, 0, $bytes.Length)
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : IOException
+ 
+Exception calling "Write" with "3" argument(s): "Unable to write data to the transport connection: An established 
+connection was aborted by the software in your host machine."
+At C:\Users\janaa\Downloads\MovieRec\tools\dev-server.ps1:60 char:5
++     $stream.Write($bytes, 0, $bytes.Length)
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : IOException
+ 
+Exception calling "Write" with "3" argument(s): "Unable to write data to the transport connection: An established 
+connection was aborted by the software in your host machine."
+At C:\Users\janaa\Downloads\MovieRec\tools\dev-server.ps1:60 char:5
++     $stream.Write($bytes, 0, $bytes.Length)
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : IOException
+ 
+Exception calling "Write" with "3" argument(s): "Unable to write data to the transport connection: An established 
+connection was aborted by the software in your host machine."
+At C:\Users\janaa\Downloads\MovieRec\tools\dev-server.ps1:60 char:5
++     $stream.Write($bytes, 0, $bytes.Length)
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : IOException
+ 
+Exception calling "Write" with "3" argument(s): "Unable to write data to the transport connection: An established 
+connection was aborted by the software in your host machine."
+At C:\Users\janaa\Downloads\MovieRec\tools\dev-server.ps1:60 char:5
++     $stream.Write($bytes, 0, $bytes.Length)
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : IOException
+ 
+Exception calling "Write" with "3" argument(s): "Unable to write data to the transport connection: An established 
+connection was aborted by the software in your host machine."
+At C:\Users\janaa\Downloads\MovieRec\tools\dev-server.ps1:60 char:5
++     $stream.Write($bytes, 0, $bytes.Length)
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : IOException
+ 
+Exception calling "Write" with "3" argument(s): "Unable to write data to the transport connection: An established 
+connection was aborted by the software in your host machine."
+At C:\Users\janaa\Downloads\MovieRec\tools\dev-server.ps1:60 char:5
++     $stream.Write($bytes, 0, $bytes.Length)
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : IOException
+ 
+Exception calling "Write" with "3" argument(s): "Unable to write data to the transport connection: An established 
+connection was aborted by the software in your host machine."
+At C:\Users\janaa\Downloads\MovieRec\tools\dev-server.ps1:60 char:5
++     $stream.Write($bytes, 0, $bytes.Length)
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : IOException
+ 
+Exception calling "Write" with "3" argument(s): "Unable to write data to the transport connection: An established 
+connection was aborted by the software in your host machine."
+At C:\Users\janaa\Downloads\MovieRec\tools\dev-server.ps1:60 char:5
++     $stream.Write($bytes, 0, $bytes.Length)
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : IOException
+ 
+Exception calling "Write" with "3" argument(s): "Unable to write data to the transport connection: An established 
+connection was aborted by the software in your host machine."
+At C:\Users\janaa\Downloads\MovieRec\tools\dev-server.ps1:60 char:5
++     $stream.Write($bytes, 0, $bytes.Length)
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : IOException
+ 
+Exception calling "Write" with "3" argument(s): "Unable to write data to the transport connection: An established 
+connection was aborted by the software in your host machine."
+At C:\Users\janaa\Downloads\MovieRec\tools\dev-server.ps1:60 char:5
++     $stream.Write($bytes, 0, $bytes.Length)
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : IOException
+ 
+Exception calling "Write" with "3" argument(s): "Unable to write data to the transport connection: An established 
+connection was aborted by the software in your host machine."
+At C:\Users\janaa\Downloads\MovieRec\tools\dev-server.ps1:60 char:5
++     $stream.Write($bytes, 0, $bytes.Length)
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : IOException
+ 
