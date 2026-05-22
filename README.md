@@ -27,7 +27,7 @@ Start the dev server:
 npm run dev
 ```
 
-Open the app at the address Vite prints (usually http://localhost:5173).
+Open the app at the address Vite prints.
 
 ## Build
 
