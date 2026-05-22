@@ -101,6 +101,7 @@ const els = {
 
 function init() {
   loadState();
+  loadPreferences();
   restoreSidebarState();
   bindEvents();
   render();
@@ -206,14 +207,28 @@ function bindEvents() {
     setPersona(chip.dataset.persona);
   });
 
-  // Kids mode toggle
-  const kidsToggle = document.getElementById('kids-mode-toggle');
-  if (kidsToggle) {
-    kidsToggle.checked = state.kidsMode;
-    kidsToggle.addEventListener('change', (e) => {
-      state.kidsMode = !!e.target.checked;
+  // Content mode selector
+  const contentModeSelector = document.getElementById('content-mode-selector');
+  if (contentModeSelector) {
+    contentModeSelector.addEventListener('click', (event) => {
+      const btn = event.target.closest('.content-mode-btn');
+      if (!btn) return;
+      const mode = btn.dataset.mode;
+      state.kidsMode = mode === 'kids';
       savePreferences();
+      
+      // Update active state
+      contentModeSelector.querySelectorAll('.content-mode-btn').forEach((b) => {
+        b.classList.toggle('active', b.dataset.mode === mode);
+      });
+      
       render();
+    });
+    
+    // Initialize active button
+    const activeBtn = contentModeSelector.querySelector(state.kidsMode ? '[data-mode="kids"]' : '[data-mode="adult"]');
+    contentModeSelector.querySelectorAll('.content-mode-btn').forEach((b) => {
+      b.classList.toggle('active', b === activeBtn);
     });
   }
 

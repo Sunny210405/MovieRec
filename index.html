@@ -131,10 +131,16 @@
             <span class="pill-dot"></span>
             <span id="active-persona-name">You</span>
           </div>
-          <label class="kids-mode" title="Kids mode" style="display:flex;align-items:center;margin-left:12px">
-            <input type="checkbox" id="kids-mode-toggle" style="margin-right:8px">
-            <span>Kids mode</span>
-          </label>
+          <div class="content-mode-selector" id="content-mode-selector">
+            <button class="content-mode-btn active" data-mode="adult" title="Adult mode - Show all content">
+              <span class="mode-avatar">👤</span>
+              <span>Adult</span>
+            </button>
+            <button class="content-mode-btn" data-mode="kids" title="Kids mode - Family-friendly content only">
+              <span class="mode-avatar">👶</span>
+              <span>Kids</span>
+            </button>
+          </div>
         </div>
       </header>
 
