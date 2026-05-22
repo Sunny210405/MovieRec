@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AetherStream — Premium Movie Recommendations</title>
+  <meta name="description" content="AetherStream is your AI-powered premium streaming companion. Discover movies tailored to your taste through collaborative and content-based filtering.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Animated Liquid Glass Background -->
+  <div class="liquid-backdrop">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="blob blob-4"></div>
+  </div>
+  <div class="grid-overlay"></div>
+
+  <!-- App Shell -->
+  <div class="app-shell">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-inner">
+        <!-- Brand -->
+        <div class="brand-logo">
+          <div class="logo-mark">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M5 3l14 9-14 9V3z" fill="url(#grad1)"/>
+              <defs>
+                <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style="stop-color:#a78bfa"/>
+                  <stop offset="100%" style="stop-color:#ec4899"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <span class="brand-name">AetherStream</span>
+          <button class="sidebar-collapse" id="sidebar-collapse" aria-label="Collapse sidebar" title="Collapse sidebar">
+            <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="nav-menu" role="navigation" aria-label="Main navigation">
+          <button class="nav-item active" data-view="home" id="nav-home">
+            <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
+            <span>Home</span>
+          </button>
+          <button class="nav-item" data-view="library" id="nav-library">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M3 9h6M3 15h6"/></svg>
+            <span>Browse</span>
+          </button>
+          <button class="nav-item" data-view="watchlist" id="nav-watchlist">
+            <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+            <span>Watchlist</span>
+            <span class="nav-badge" id="watchlist-count-badge" style="display:none">0</span>
+          </button>
+          <button class="nav-item" data-view="ratings" id="nav-ratings">
+            <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <span>My Ratings</span>
+          </button>
+        </nav>
+
+        <!-- Divider -->
+        <div class="sidebar-divider"></div>
+
+        <!-- Persona Switcher -->
+        <div class="persona-panel">
+          <p class="persona-label">Viewing As</p>
+          <div class="persona-cards" id="persona-selector">
+            <button class="persona-chip active" data-persona="custom">
+              <span class="persona-avatar">👤</span>
+              <span>You</span>
+            </button>
+            <button class="persona-chip" data-persona="Action Fanatic">
+              <span class="persona-avatar">💥</span>
+              <span>Action</span>
+            </button>
+            <button class="persona-chip" data-persona="Cinephile Critic">
+              <span class="persona-avatar">🎞️</span>
+              <span>Critic</span>
+            </button>
+            <button class="persona-chip" data-persona="Sci-Fi Explorer">
+              <span class="persona-avatar">🚀</span>
+              <span>Sci-Fi</span>
+            </button>
+            <button class="persona-chip" data-persona="Romance Dreamer">
+              <span class="persona-avatar">💕</span>
+              <span>Romance</span>
+            </button>
+            <button class="persona-chip" data-persona="Horror Buff">
+              <span class="persona-avatar">👻</span>
+              <span>Horror</span>
+            </button>
+            <button class="persona-chip" data-persona="Indian Cinema Lover">
+              <span class="persona-avatar">IN</span>
+              <span>Indian</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Taste Match Index -->
+        <div class="taste-panel glass-card" id="taste-panel">
+          <p class="taste-panel-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            Taste Match Index
+          </p>
+          <div id="persona-bars"></div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content" id="main-scroll">
+
+      <!-- Top Bar -->
+      <header class="top-bar">
+        <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu">
+          <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" id="search-input" placeholder="Search movies, directors, genres..." autocomplete="off" spellcheck="false">
+          <button class="search-clear" id="search-clear" aria-label="Clear search" style="display:none">×</button>
+        </div>
+        <div class="top-bar-actions">
+          <div class="active-persona-pill" id="active-persona-display">
+            <span class="pill-dot"></span>
+            <span id="active-persona-name">You</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- ===== HOME VIEW ===== -->
+      <div id="view-home" class="view-pane">
+
+        <!-- Spotlight Hero -->
+        <section class="hero-spotlight" id="hero-spotlight">
+          <div class="hero-backdrop-img" id="hero-backdrop">
+            <div class="hero-vignette"></div>
+          </div>
+          <div class="hero-content" id="hero-content">
+            <div class="hero-badges" id="hero-badges">
+              <span class="hero-badge quality">4K Ultra HD</span>
+              <span class="hero-badge dolby">Dolby Atmos</span>
+            </div>
+            <h1 class="hero-title" id="hero-title">Interstellar</h1>
+            <div class="hero-meta" id="hero-meta">
+              <span class="hero-meta-item" id="hero-year">2014</span>
+              <span class="meta-dot">·</span>
+              <span class="hero-meta-item" id="hero-duration">2h 49m</span>
+              <span class="meta-dot">·</span>
+              <div class="hero-stars" id="hero-stars"></div>
+              <span class="hero-meta-item match-tag" id="hero-match"></span>
+            </div>
+            <div class="hero-genres" id="hero-genres"></div>
+            <p class="hero-desc" id="hero-desc">When Earth becomes uninhabitable, a team of explorers travels through a wormhole in space in an attempt to ensure humanity's survival.</p>
+            <div class="hero-providers" id="hero-providers"></div>
+            <div class="hero-actions" id="hero-actions">
+              <button class="btn-play-trailer" id="hero-play-trailer">
+                <svg width="18" height="18" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z" fill="currentColor"/></svg>
+                Play Trailer
+              </button>
+              <button class="btn-watchlist" id="hero-watchlist-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+                <span id="hero-watchlist-text">Watchlist</span>
+              </button>
+              <button class="btn-info" id="hero-info-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 8v4M12 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                More Info
+              </button>
+            </div>
+          </div>
+          <!-- Hero Navigation Dots -->
+          <div class="hero-dots" id="hero-dots"></div>
+        </section>
+
+        <!-- Dynamic Rows Container -->
+        <div class="rows-container" id="rows-container">
+
+          <!-- Watchlist Row (dynamic) -->
+          <section class="carousel-section" id="watchlist-row" style="display:none">
+            <div class="section-header">
+              <h2 class="section-title">
+                <svg width="18" height="18" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" fill="none" stroke="#a78bfa" stroke-width="2"/></svg>
+                My Watchlist
+              </h2>
+              <button class="see-all-btn" data-view="watchlist">See All</button>
+            </div>
+            <div class="carousel-wrap">
+              <button class="carousel-arrow arrow-left" aria-label="Scroll left">
+                <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <div class="carousel-viewport" id="watchlist-carousel"><!-- JS renders --></div>
+              <button class="carousel-arrow arrow-right" aria-label="Scroll right">
+                <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+          </section>
+
+          <!-- Top Picks Row -->
+          <section class="carousel-section" id="top-picks-row">
+            <div class="section-header">
+              <h2 class="section-title">
+                <svg width="18" height="18" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" fill="none" stroke="#ec4899" stroke-width="2"/><circle cx="9" cy="7" r="4" fill="none" stroke="#ec4899" stroke-width="2"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" fill="none" stroke="#ec4899" stroke-width="2"/></svg>
+                Top Picks For You
+              </h2>
+              <span class="section-tag collab-tag">Collaborative AI</span>
+            </div>
+            <div class="carousel-wrap">
+              <button class="carousel-arrow arrow-left">
+                <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <div class="carousel-viewport" id="collab-carousel"><!-- JS renders --></div>
+              <button class="carousel-arrow arrow-right">
+                <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+          </section>
+
+          <!-- Because You Liked Row -->
+          <section class="carousel-section" id="content-row">
+            <div class="section-header">
+              <h2 class="section-title">
+                <svg width="18" height="18" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" fill="none" stroke="#f59e0b" stroke-width="2"/></svg>
+                <span id="content-row-title">Because You Liked</span>
+              </h2>
+              <span class="section-tag content-tag">Content-Based AI</span>
+            </div>
+            <div class="carousel-wrap">
+              <button class="carousel-arrow arrow-left">
+                <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <div class="carousel-viewport" id="content-carousel"><!-- JS renders --></div>
+              <button class="carousel-arrow arrow-right">
+                <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+          </section>
+
+          <!-- Trending Row -->
+          <section class="carousel-section" id="trending-row">
+            <div class="section-header">
+              <h2 class="section-title">
+                <svg width="18" height="18" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18" fill="none" stroke="#06b6d4" stroke-width="2"/><polyline points="17 6 23 6 23 12" fill="none" stroke="#06b6d4" stroke-width="2"/></svg>
+                Trending Now
+              </h2>
+              <span class="section-tag trending-tag">Top Rated</span>
+            </div>
+            <div class="carousel-wrap">
+              <button class="carousel-arrow arrow-left">
+                <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <div class="carousel-viewport" id="trending-carousel"><!-- JS renders --></div>
+              <button class="carousel-arrow arrow-right">
+                <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+          </section>
+
+          <!-- Indian Cinema Row -->
+          <section class="carousel-section">
+            <div class="section-header">
+              <h2 class="section-title">Popular Indian Movies</h2>
+              <span class="section-tag">Indian Cinema</span>
+            </div>
+            <div class="carousel-wrap">
+              <button class="carousel-arrow arrow-left">
+                <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <div class="carousel-viewport" id="indian-carousel"><!-- JS renders --></div>
+              <button class="carousel-arrow arrow-right">
+                <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+          </section>
+
+          <!-- Sci-Fi & Action Row -->
+          <section class="carousel-section">
+            <div class="section-header">
+              <h2 class="section-title">🚀 Sci-Fi & Action</h2>
+            </div>
+            <div class="carousel-wrap">
+              <button class="carousel-arrow arrow-left">
+                <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <div class="carousel-viewport" id="scifi-carousel"><!-- JS renders --></div>
+              <button class="carousel-arrow arrow-right">
+                <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+          </section>
+
+          <!-- Drama Masterpieces Row -->
+          <section class="carousel-section">
+            <div class="section-header">
+              <h2 class="section-title">🎭 Drama Masterpieces</h2>
+            </div>
+            <div class="carousel-wrap">
+              <button class="carousel-arrow arrow-left">
+                <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <div class="carousel-viewport" id="drama-carousel"><!-- JS renders --></div>
+              <button class="carousel-arrow arrow-right">
+                <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+          </section>
+
+          <!-- Thriller & Mystery Row -->
+          <section class="carousel-section">
+            <div class="section-header">
+              <h2 class="section-title">🔪 Thrillers & Mystery</h2>
+            </div>
+            <div class="carousel-wrap">
+              <button class="carousel-arrow arrow-left">
+                <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <div class="carousel-viewport" id="thriller-carousel"><!-- JS renders --></div>
+              <button class="carousel-arrow arrow-right">
+                <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+          </section>
+
+        </div>
+      </div>
+
+      <!-- ===== BROWSE / LIBRARY VIEW ===== -->
+      <div id="view-library" class="view-pane" style="display:none">
+        <div class="page-header">
+          <h1 class="page-title">Browse All</h1>
+          <p class="page-subtitle">50 curated films across every genre</p>
+        </div>
+
+        <div class="filter-row">
+          <div class="genre-chips" id="genre-chips">
+            <button class="chip active" data-genre="All">All</button>
+            <button class="chip" data-genre="Sci-Fi">Sci-Fi</button>
+            <button class="chip" data-genre="Action">Action</button>
+            <button class="chip" data-genre="Drama">Drama</button>
+            <button class="chip" data-genre="Thriller">Thriller</button>
+            <button class="chip" data-genre="Romance">Romance</button>
+            <button class="chip" data-genre="Comedy">Comedy</button>
+            <button class="chip" data-genre="Fantasy">Fantasy</button>
+            <button class="chip" data-genre="Horror">Horror</button>
+            <button class="chip" data-genre="Animation">Animation</button>
+            <button class="chip" data-genre="Indian Cinema">Indian Cinema</button>
+          </div>
+          <div class="sort-wrap">
+            <select id="library-sort" class="sort-select">
+              <option value="rating">Top Rated</option>
+              <option value="year-desc">Newest First</option>
+              <option value="year-asc">Oldest First</option>
+              <option value="title">A–Z</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="library-grid" id="library-grid"><!-- JS renders --></div>
+      </div>
+
+      <!-- ===== WATCHLIST VIEW ===== -->
+      <div id="view-watchlist" class="view-pane" style="display:none">
+        <div class="page-header">
+          <h1 class="page-title">My Watchlist</h1>
+          <p class="page-subtitle"><span id="watchlist-count">0</span> titles saved</p>
+        </div>
+        <div class="library-grid" id="watchlist-grid"><!-- JS renders --></div>
+      </div>
+
+      <!-- ===== RATINGS VIEW ===== -->
+      <div id="view-ratings" class="view-pane" style="display:none">
+        <div class="page-header">
+          <h1 class="page-title">My Ratings</h1>
+          <p class="page-subtitle"><span id="ratings-count">0</span> movies rated</p>
+        </div>
+        <div id="ratings-list"><!-- JS renders --></div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ===== MOVIE DETAIL MODAL ===== -->
+  <div class="modal-overlay" id="detail-modal">
+    <div class="detail-modal-content" id="detail-modal-box">
+      <button class="modal-close" id="detail-close" aria-label="Close">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+
+      <!-- Backdrop Header -->
+      <div class="detail-backdrop-wrap">
+        <img class="detail-backdrop" id="detail-backdrop-img" src="" alt="">
+        <div class="detail-backdrop-gradient"></div>
+        <div class="detail-header-info">
+          <div class="detail-poster-wrap">
+            <img class="detail-poster" id="detail-poster-img" src="" alt="">
+          </div>
+          <div class="detail-header-text">
+            <div class="detail-badges" id="detail-badges">
+              <span class="hero-badge quality">4K</span>
+            </div>
+            <h2 class="detail-title" id="detail-title">Movie Title</h2>
+            <div class="detail-meta">
+              <span id="detail-year"></span>
+              <span class="meta-dot">·</span>
+              <span id="detail-duration"></span>
+              <span class="meta-dot">·</span>
+              <span class="detail-rating">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="#fbbf24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <span id="detail-rating"></span>
+              </span>
+            </div>
+            <div class="detail-genres" id="detail-genres"></div>
+            <div class="detail-actions-top">
+              <button class="btn-play-trailer" id="detail-play-trailer">
+                <svg width="16" height="16" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z" fill="currentColor"/></svg>
+                Play Trailer
+              </button>
+              <button class="btn-watchlist" id="detail-watchlist-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+                <span id="detail-watchlist-text">Add to Watchlist</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detail Body -->
+      <div class="detail-body">
+        <!-- Synopsis -->
+        <div class="detail-section">
+          <h4 class="detail-section-title">Synopsis</h4>
+          <p class="detail-desc" id="detail-desc"></p>
+        </div>
+
+        <!-- Where to Watch -->
+        <div class="detail-section">
+          <h4 class="detail-section-title">Where to Watch</h4>
+          <div class="providers-row" id="detail-providers"></div>
+        </div>
+
+        <!-- Rate This -->
+        <div class="detail-section">
+          <h4 class="detail-section-title">Your Rating</h4>
+          <div class="star-rating-wrap">
+            <div class="star-rating" id="detail-stars">
+              <svg class="rating-star" data-value="1" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg class="rating-star" data-value="2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg class="rating-star" data-value="3" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg class="rating-star" data-value="4" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg class="rating-star" data-value="5" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <span class="star-label" id="detail-star-label">Not rated yet</span>
+          </div>
+        </div>
+
+        <!-- Credits -->
+        <div class="detail-section">
+          <h4 class="detail-section-title">Credits</h4>
+          <div class="credits-grid">
+            <div class="credit-item">
+              <span class="credit-label">Director</span>
+              <span class="credit-val" id="detail-director"></span>
+            </div>
+            <div class="credit-item">
+              <span class="credit-label">Starring</span>
+              <span class="credit-val" id="detail-cast"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== VIDEO THEATER MODAL ===== -->
+  <div class="modal-overlay" id="video-modal">
+    <div class="video-modal-content">
+      <button class="modal-close video-close" id="video-close" aria-label="Close trailer">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <div class="video-title-bar">
+        <span id="video-modal-title">Official Trailer</span>
+        <a class="video-badge" id="video-fallback-link" href="#" target="_blank" rel="noopener">Open on YouTube</a>
+      </div>
+      <div class="video-frame-wrap">
+        <iframe id="video-iframe" src="" allowfullscreen allow="autoplay; encrypted-media" frameborder="0" title="Movie Trailer"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast-container"></div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
