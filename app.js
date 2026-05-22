@@ -6,9 +6,9 @@ import {
 } from './recommender.js';
 
 const STORAGE = {
-  ratings: 'aether_user_ratings',
-  watchlist: 'aether_watchlist',
-  legacyFavorites: 'aether_user_favorites'
+  ratings: 'cinefy_user_ratings',
+  watchlist: 'cinefy_watchlist',
+  legacyFavorites: 'cinefy_user_favorites'
 };
 
 const state = {
@@ -107,7 +107,7 @@ function init() {
 }
 
 function restoreSidebarState() {
-  if (!mobileSidebarQuery.matches && localStorage.getItem('aether_sidebar_collapsed') === 'true') {
+  if (!mobileSidebarQuery.matches && localStorage.getItem('cinefy_sidebar_collapsed') === 'true') {
     document.body.classList.add('sidebar-collapsed');
   }
   syncSidebarCollapseButton();
@@ -115,7 +115,7 @@ function restoreSidebarState() {
 
 function toggleSidebarCollapse() {
   document.body.classList.toggle('sidebar-collapsed');
-  localStorage.setItem('aether_sidebar_collapsed', document.body.classList.contains('sidebar-collapsed'));
+  localStorage.setItem('cinefy_sidebar_collapsed', document.body.classList.contains('sidebar-collapsed'));
   syncSidebarCollapseButton();
 }
 

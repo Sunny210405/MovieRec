@@ -1,4 +1,4 @@
-# MovieRec — AetherRec Movie Recommender
+# Cinefy — Movie Recommender
 
 Simple client-side movie recommender demo built with Vite.
 
