@@ -77,16 +77,7 @@ npm run deploy
 
 This will publish the `dist/` output to the `gh-pages` branch. In your repository Settings → Pages, ensure GitHub Pages is set to deploy from the `gh-pages` branch.
 
-## Streamlit deployment
-
-This repository now includes a Streamlit reimplementation. To run locally:
-
-```bash
-pip install -r requirements.txt
-streamlit run app.py
-```
-
-To publish, use Streamlit Cloud (recommended) or deploy to a VM/container and expose the app. Streamlit Cloud can be linked directly to this GitHub repo.
+<!-- Streamlit version removed. -->
 
 ## License
 
