@@ -52,6 +52,31 @@ npm run preview
 
 Feel free to open issues or PRs. For local development, follow the "Install" and "Development" steps above.
 
+## Deploy to GitHub Pages
+
+Easily deploy the built site to GitHub Pages using the `gh-pages` package.
+
+1. Install the dependency:
+
+```bash
+npm install --save-dev gh-pages
+```
+
+2. Add these scripts to `package.json` (already added in this repo):
+
+```json
+"predeploy": "npm run build",
+"deploy": "gh-pages -d dist"
+```
+
+3. Run the deploy command:
+
+```bash
+npm run deploy
+```
+
+This will publish the `dist/` output to the `gh-pages` branch. In your repository Settings → Pages, ensure GitHub Pages is set to deploy from the `gh-pages` branch.
+
 ## License
 
 This project has no license specified. Add a `LICENSE` file if you want to permit reuse.
