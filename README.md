@@ -87,57 +87,6 @@ MovieRec/
 
 ---
 
-## 🌐 Deploy to GitHub Pages
-
-Share your recommender with the world in seconds!
-
-### Setup
-
-1. Install GitHub Pages deployment tool:
-
-```bash
-npm install --save-dev gh-pages
-```
-
-2. Configure deployment (already set up in this repo):
-
-```json
-{
-  "scripts": {
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
-  }
-}
-```
-
-3. Deploy your site:
-
-```bash
-npm run deploy
-```
-
-### Enable GitHub Pages
-
-1. Go to **Settings** → **Pages**
-2. Select `gh-pages` branch as the source
-3. Your site will be live at `https://Sunny210405.github.io/MovieRec`
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! Here's how:
-
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
-3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
-4. **Push** to the branch (`git push origin feature/amazing-feature`)
-5. **Open** a Pull Request
-
-For issues or questions, feel free to [open an issue](https://github.com/Sunny210405/MovieRec/issues).
-
----
-
 ## 📄 License
 
 This project is currently unlicensed. To permit reuse of your code, consider adding a [LICENSE file](https://choosealicense.com/).
