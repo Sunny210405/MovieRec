@@ -89,8 +89,7 @@ MovieRec/
 
 ## 📄 License
 
-This project is currently unlicensed. To permit reuse of your code, consider adding a [LICENSE file](https://choosealicense.com/).
-
+This project is currently unlicensed.
 ---
 
 ## 🎓 Learning Resources
