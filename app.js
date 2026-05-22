@@ -682,10 +682,44 @@ function setImage(img, movie, kind) {
 
 function setImageFallback(img, movie, kind) {
   img.onerror = null;
+
+  // Attempt a list of alternative sources before falling back to generated SVG.
+  const current = img.src || '';
+  const candidates = [];
+
+  if (kind === 'poster') {
+    if (movie.poster && !current.includes(movie.poster)) candidates.push(movie.poster);
+    if (movie.poster && movie.poster.includes('/w500/')) {
+      const w780 = movie.poster.replace('/w500/', '/w780/');
+      const original = movie.poster.replace('/w500/', '/original/');
+      if (!current.includes(w780)) candidates.push(w780);
+      if (!current.includes(original)) candidates.push(original);
+    }
+    if (movie.backdrop && !current.includes(movie.backdrop)) candidates.push(movie.backdrop);
+  } else {
+    if (movie.backdrop && !current.includes(movie.backdrop)) candidates.push(movie.backdrop);
+    if (movie.backdrop && movie.backdrop.includes('/original/')) {
+      const w1280 = movie.backdrop.replace('/original/', '/w1280/');
+      if (!current.includes(w1280)) candidates.push(w1280);
+    }
+    if (movie.poster && !current.includes(movie.poster)) candidates.push(movie.poster);
+  }
+
+  // Always try a generated SVG last
+  candidates.push(generatedMedia(movie, kind));
+
+  const index = Number(img.dataset.fallbackIndex || 0);
+  if (index < candidates.length) {
+    img.dataset.fallbackIndex = index + 1;
+    img.classList.toggle('generated-media', candidates[index].startsWith('data:image/svg+xml'));
+    img.onerror = () => setImageFallback(img, movie, kind);
+    img.src = candidates[index];
+    return;
+  }
+
+  // If all attempts exhausted, use generated media
   img.classList.add('generated-media');
-  img.src = kind === 'backdrop' && movie.poster
-    ? movie.poster
-    : generatedMedia(movie, kind);
+  img.src = generatedMedia(movie, kind);
 }
 
 function mediaUrl(movie, kind) {
