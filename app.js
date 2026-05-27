@@ -36,6 +36,8 @@ const els = {
   sidebar: $('sidebar'),
   sidebarCollapse: $('sidebar-collapse'),
   menuToggle: $('menu-toggle'),
+  searchBox: $('search-box'),
+  searchToggle: $('search-toggle'),
   searchInput: $('search-input'),
   searchClear: $('search-clear'),
   activePersonaName: $('active-persona-name'),
@@ -190,7 +192,7 @@ function bindEvents() {
 
   els.searchInput.addEventListener('input', (event) => {
     state.searchQuery = event.target.value.trim();
-    els.searchClear.style.display = state.searchQuery ? 'grid' : 'none';
+    els.searchClear.style.display = state.searchQuery ? 'flex' : 'none';
     renderActiveView();
   });
 
@@ -201,24 +203,41 @@ function bindEvents() {
     renderActiveView();
   });
 
-  els.personaSelector.addEventListener('click', (event) => {
-    const chip = event.target.closest('.persona-chip');
-    if (!chip) return;
-    setPersona(chip.dataset.persona);
+  // Search box expand/collapse
+  els.searchToggle.addEventListener('click', () => {
+    els.searchBox.classList.remove('collapsed');
+    els.searchInput.focus();
   });
+
+  els.searchInput.addEventListener('blur', () => {
+    if (!state.searchQuery) {
+      els.searchBox.classList.add('collapsed');
+    }
+  });
+
+  // Initialize search box as collapsed
+  els.searchBox.classList.add('collapsed');
+
+  if (els.personaSelector) {
+    els.personaSelector.addEventListener('click', (event) => {
+      const chip = event.target.closest('.persona-chip');
+      if (!chip) return;
+      setPersona(chip.dataset.persona);
+    });
+  }
 
   // Content mode selector
   const contentModeSelector = document.getElementById('content-mode-selector');
   if (contentModeSelector) {
     contentModeSelector.addEventListener('click', (event) => {
-      const btn = event.target.closest('.content-mode-btn');
+      const btn = event.target.closest('.mode-toggle-btn');
       if (!btn) return;
       const mode = btn.dataset.mode;
       state.kidsMode = mode === 'kids';
       savePreferences();
       
       // Update active state
-      contentModeSelector.querySelectorAll('.content-mode-btn').forEach((b) => {
+      contentModeSelector.querySelectorAll('.mode-toggle-btn').forEach((b) => {
         b.classList.toggle('active', b.dataset.mode === mode);
       });
       
@@ -227,9 +246,9 @@ function bindEvents() {
     
     // Initialize active button
     const activeBtn = contentModeSelector.querySelector(state.kidsMode ? '[data-mode="kids"]' : '[data-mode="adult"]');
-    contentModeSelector.querySelectorAll('.content-mode-btn').forEach((b) => {
-      b.classList.toggle('active', b === activeBtn);
-    });
+    if (activeBtn) {
+      activeBtn.classList.add('active');
+    }
   }
 
   els.genreChips.addEventListener('click', (event) => {
@@ -672,9 +691,11 @@ function setPersona(persona) {
     toast(`Viewing as ${persona}`);
   }
 
-  els.personaSelector.querySelectorAll('.persona-chip').forEach((chip) => {
-    chip.classList.toggle('active', chip.dataset.persona === state.activePersona);
-  });
+  if (els.personaSelector) {
+    els.personaSelector.querySelectorAll('.persona-chip').forEach((chip) => {
+      chip.classList.toggle('active', chip.dataset.persona === state.activePersona);
+    });
+  }
   els.activePersonaName.textContent = state.activePersona === 'custom' ? 'You' : state.activePersona;
   render();
 }
@@ -683,9 +704,11 @@ function restoreCustomProfile(show = true) {
   state.activePersona = 'custom';
   state.userRatings = { ...customProfile.ratings };
   state.watchlist = [...customProfile.watchlist];
-  els.personaSelector.querySelectorAll('.persona-chip').forEach((chip) => {
-    chip.classList.toggle('active', chip.dataset.persona === 'custom');
-  });
+  if (els.personaSelector) {
+    els.personaSelector.querySelectorAll('.persona-chip').forEach((chip) => {
+      chip.classList.toggle('active', chip.dataset.persona === 'custom');
+    });
+  }
   els.activePersonaName.textContent = 'You';
   if (show) toast('Switched back to your profile');
 }

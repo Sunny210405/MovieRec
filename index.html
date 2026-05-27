@@ -65,43 +65,6 @@
         </nav>
 
         <!-- Divider -->
-        <div class="sidebar-divider"></div>
-
-        <!-- Persona Switcher -->
-        <div class="persona-panel">
-          <p class="persona-label">Viewing As</p>
-          <div class="persona-cards" id="persona-selector">
-            <button class="persona-chip active" data-persona="custom">
-              <span class="persona-avatar">👤</span>
-              <span>You</span>
-            </button>
-            <button class="persona-chip" data-persona="Action Fanatic">
-              <span class="persona-avatar">💥</span>
-              <span>Action</span>
-            </button>
-            <button class="persona-chip" data-persona="Cinephile Critic">
-              <span class="persona-avatar">🎞️</span>
-              <span>Critic</span>
-            </button>
-            <button class="persona-chip" data-persona="Sci-Fi Explorer">
-              <span class="persona-avatar">🚀</span>
-              <span>Sci-Fi</span>
-            </button>
-            <button class="persona-chip" data-persona="Romance Dreamer">
-              <span class="persona-avatar">💕</span>
-              <span>Romance</span>
-            </button>
-            <button class="persona-chip" data-persona="Horror Buff">
-              <span class="persona-avatar">👻</span>
-              <span>Horror</span>
-            </button>
-            <button class="persona-chip" data-persona="Indian Cinema Lover">
-              <span class="persona-avatar">IN</span>
-              <span>Indian</span>
-            </button>
-          </div>
-        </div>
-
         <!-- Taste Match Index -->
         <div class="taste-panel glass-card" id="taste-panel">
           <p class="taste-panel-title">
@@ -121,22 +84,32 @@
         <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu">
           <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
-        <div class="search-box">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-          <input type="text" id="search-input" placeholder="Search movies, directors, genres..." autocomplete="off" spellcheck="false">
-          <button class="search-clear" id="search-clear" aria-label="Clear search" style="display:none">×</button>
+        <div class="top-bar-logo">
+          <img src="cinefy_logo.png" alt="Cinefy Logo" class="logo-image">
+        </div>
+        <div class="search-box" id="search-box">
+          <button class="search-toggle" id="search-toggle" aria-label="Search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <span>Search</span>
+          </button>
+          <div class="search-input-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" id="search-input" placeholder="Search movies, directors, genres..." autocomplete="off" spellcheck="false">
+            <button class="search-clear" id="search-clear" aria-label="Clear search" style="display:none">×</button>
+          </div>
         </div>
         <div class="top-bar-actions">
           <div class="active-persona-pill" id="active-persona-display">
             <span class="pill-dot"></span>
             <span id="active-persona-name">You</span>
           </div>
-          <div class="content-mode-selector" id="content-mode-selector">
-            <button class="content-mode-btn active" data-mode="adult" title="Adult mode - Show all content">
+          <div class="content-mode-toggle" id="content-mode-selector">
+            <button class="mode-toggle-btn" data-mode="adult" title="Adult mode - Show all content">
               <span class="mode-avatar">👤</span>
               <span>Adult</span>
             </button>
-            <button class="content-mode-btn" data-mode="kids" title="Kids mode - Family-friendly content only">
+            <div class="mode-divider"></div>
+            <button class="mode-toggle-btn" data-mode="kids" title="Kids mode - Family-friendly content only">
               <span class="mode-avatar">👶</span>
               <span>Kids</span>
             </button>
