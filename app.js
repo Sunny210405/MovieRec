@@ -8,8 +8,22 @@ import {
 const STORAGE = {
   ratings: 'cinefy_user_ratings',
   watchlist: 'cinefy_watchlist',
-  legacyFavorites: 'cinefy_user_favorites'
+  legacyFavorites: 'cinefy_user_favorites',
+  movieCatalog: 'cinefy_movie_catalog',
+  movieCatalogUpdated: 'cinefy_movie_catalog_updated',
+  artworkCache: 'cinefy_artwork_cache'
 };
+
+const TMDB = {
+  imageBase: 'https://image.tmdb.org/t/p',
+  apiBase: 'https://api.themoviedb.org/3',
+  cacheMs: 1000 * 60 * 60 * 12
+};
+
+const HERO_ROTATION_MS = 5000;
+
+let scrollRevealObserver = null;
+let artworkCache = {};
 
 const state = {
   activeView: 'home',
@@ -34,6 +48,7 @@ const mobileSidebarQuery = window.matchMedia('(max-width: 980px)');
 
 const els = {
   sidebar: $('sidebar'),
+  mainScroll: $('main-scroll'),
   sidebarCollapse: $('sidebar-collapse'),
   menuToggle: $('menu-toggle'),
   searchBox: $('search-box'),
@@ -103,9 +118,12 @@ const els = {
 function init() {
   loadState();
   loadPreferences();
+  loadArtworkCache();
+  loadCachedMovieCatalog();
   restoreSidebarState();
   bindEvents();
   render();
+  refreshMovieCatalog();
   startHeroRotation();
 }
 
@@ -122,6 +140,141 @@ function loadPreferences() {
   } catch {
     state.kidsMode = false;
   }
+}
+
+function loadArtworkCache() {
+  try {
+    artworkCache = JSON.parse(localStorage.getItem(STORAGE.artworkCache) || '{}');
+  } catch {
+    artworkCache = {};
+  }
+}
+
+function saveArtworkCache() {
+  try {
+    localStorage.setItem(STORAGE.artworkCache, JSON.stringify(artworkCache));
+  } catch {}
+}
+
+function loadCachedMovieCatalog() {
+  try {
+    const cached = JSON.parse(localStorage.getItem(STORAGE.movieCatalog) || '[]');
+    if (Array.isArray(cached) && cached.length) {
+      replaceMovieCatalog(mergeMovieCatalog(cached));
+    }
+  } catch {}
+}
+
+async function refreshMovieCatalog() {
+  const credential = tmdbCredential();
+  if (!credential) return;
+
+  try {
+    const lastUpdated = Number(localStorage.getItem(STORAGE.movieCatalogUpdated) || 0);
+    if (Date.now() - lastUpdated < TMDB.cacheMs) return;
+
+    const refreshed = await fetchTmdbTrending(credential);
+    if (!refreshed.length) return;
+
+    const nextCatalog = mergeMovieCatalog(refreshed);
+    replaceMovieCatalog(nextCatalog);
+    localStorage.setItem(STORAGE.movieCatalog, JSON.stringify(nextCatalog));
+    localStorage.setItem(STORAGE.movieCatalogUpdated, String(Date.now()));
+    render();
+    toast('Movie catalog updated');
+  } catch (error) {
+    console.warn('Movie catalog update skipped:', error);
+  }
+}
+
+function tmdbCredential() {
+  try {
+    const env = import.meta.env || {};
+    const token = localStorage.getItem('cinefy_tmdb_token') || env.VITE_TMDB_READ_TOKEN || window.CINEFY_TMDB_TOKEN;
+    const key = localStorage.getItem('cinefy_tmdb_key') || env.VITE_TMDB_API_KEY || window.CINEFY_TMDB_API_KEY;
+    if (token) return { token };
+    if (key) return { key };
+  } catch {}
+  return null;
+}
+
+async function fetchTmdbTrending(credential) {
+  const trending = await tmdbFetch('/trending/movie/week', credential, { page: 1 });
+  const entries = (trending.results || [])
+    .filter((item) => item.title && item.poster_path && item.backdrop_path)
+    .slice(0, 18);
+
+  const details = await Promise.allSettled(
+    entries.map((item) => tmdbFetch(`/movie/${item.id}`, credential, {
+      append_to_response: 'credits,videos',
+      language: 'en-US'
+    }))
+  );
+
+  return details
+    .filter((result) => result.status === 'fulfilled')
+    .map((result) => tmdbMovie(result.value))
+    .filter(Boolean);
+}
+
+async function tmdbFetch(path, credential, params = {}) {
+  const url = new URL(`${TMDB.apiBase}${path}`);
+  Object.entries(params).forEach(([key, value]) => url.searchParams.set(key, value));
+  const options = {};
+  if (credential.token) {
+    options.headers = { Authorization: `Bearer ${credential.token}` };
+  } else {
+    url.searchParams.set('api_key', credential.key);
+  }
+
+  const response = await fetch(url, options);
+  if (!response.ok) throw new Error(`TMDb ${response.status}`);
+  return response.json();
+}
+
+function tmdbMovie(item) {
+  const director = item.credits?.crew?.find((person) => person.job === 'Director')?.name || 'Unknown';
+  const cast = (item.credits?.cast || []).slice(0, 4).map((person) => person.name);
+  const trailer = (item.videos?.results || []).find((video) => (
+    video.site === 'YouTube' && ['Trailer', 'Teaser'].includes(video.type)
+  ));
+  const minutes = item.runtime || 0;
+
+  return {
+    id: 100000 + item.id,
+    tmdbId: item.id,
+    title: item.title,
+    year: Number((item.release_date || '').slice(0, 4)) || new Date().getFullYear(),
+    genres: (item.genres || []).map((genre) => genre.name).slice(0, 3),
+    director,
+    cast,
+    rating: Number((item.vote_average || 0).toFixed(1)),
+    duration: minutes ? `${Math.floor(minutes / 60)}h ${minutes % 60}m` : 'Feature',
+    description: item.overview || 'Freshly updated movie from the current catalog.',
+    keywords: [
+      item.title,
+      director,
+      ...(item.genres || []).map((genre) => genre.name)
+    ].filter(Boolean),
+    poster: `${TMDB.imageBase}/w500${item.poster_path}`,
+    backdrop: `${TMDB.imageBase}/original${item.backdrop_path}`,
+    trailerId: trailer?.key || '',
+    trailerUrl: trailer?.key ? `https://www.youtube.com/watch?v=${trailer.key}` : '',
+    watchProviders: ['Availability varies']
+  };
+}
+
+function mergeMovieCatalog(refreshed) {
+  const byTitle = new Map(movies.map((movie) => [movie.title.toLowerCase(), movie]));
+  refreshed.forEach((movie) => {
+    const key = movie.title.toLowerCase();
+    byTitle.set(key, { ...(byTitle.get(key) || {}), ...movie, id: byTitle.get(key)?.id || movie.id });
+  });
+  return [...byTitle.values()];
+}
+
+function replaceMovieCatalog(nextCatalog) {
+  movies.splice(0, movies.length, ...nextCatalog);
 }
 
 function toggleSidebarCollapse() {
@@ -388,7 +541,7 @@ function renderHero() {
     generatedMedia(movie, 'backdrop')
   ].filter(Boolean);
 
-  els.heroBackdrop.style.backgroundImage = `linear-gradient(90deg, rgba(6,8,16,.96) 0%, rgba(6,8,16,.72) 43%, rgba(6,8,16,.18) 100%), ${heroImages.map((url) => `url("${url}")`).join(', ')}`;
+  els.heroBackdrop.style.backgroundImage = heroImages.map((url) => `url("${url}")`).join(', ');
   els.heroTitle.textContent = movie.title;
   els.heroYear.textContent = movie.year;
   els.heroDuration.textContent = movie.duration;
@@ -414,7 +567,7 @@ function startHeroRotation() {
     if (state.activeView !== 'home' || els.detailModal.classList.contains('show') || els.videoModal.classList.contains('show')) return;
     state.heroIndex = (state.heroIndex + 1) % heroMovies().length;
     renderHero();
-  }, 9000);
+  }, HERO_ROTATION_MS);
 }
 
 function renderHome() {
@@ -433,6 +586,38 @@ function renderHome() {
   renderMovieRail(els.scifiCarousel, byGenre(['Sci-Fi', 'Action'], 14));
   renderMovieRail(els.dramaCarousel, byGenre(['Drama'], 14));
   renderMovieRail(els.thrillerCarousel, byGenre(['Thriller', 'Mystery'], 14));
+  queueHomeScrollAnimations();
+}
+
+function queueHomeScrollAnimations() {
+  window.requestAnimationFrame(() => {
+    if (state.activeView === 'home') observeHomeScrollAnimations();
+  });
+}
+
+function observeHomeScrollAnimations() {
+  if (!('IntersectionObserver' in window)) return;
+
+  if (scrollRevealObserver) scrollRevealObserver.disconnect();
+
+  scrollRevealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('reveal-visible');
+      scrollRevealObserver.unobserve(entry.target);
+    });
+  }, {
+    root: els.mainScroll || null,
+    threshold: 0.16,
+    rootMargin: '0px 0px -8% 0px'
+  });
+
+  document.querySelectorAll('#view-home .carousel-section, #view-home .movie-card').forEach((item, index) => {
+    item.classList.remove('reveal-visible');
+    item.classList.add('scroll-reveal');
+    item.style.setProperty('--reveal-delay', `${Math.min(index % 8, 7) * 45}ms`);
+    scrollRevealObserver.observe(item);
+  });
 }
 
 function renderWatchlistRow() {
@@ -774,6 +959,11 @@ function setImageFallback(img, movie, kind) {
   // Attempt a list of alternative sources before falling back to generated SVG.
   const current = img.src || '';
   const candidates = [];
+  const generated = generatedMedia(movie, kind);
+  const cacheKey = artworkCacheKey(movie, kind);
+  if (artworkCache[cacheKey] && !current.includes(artworkCache[cacheKey])) {
+    candidates.push(artworkCache[cacheKey]);
+  }
 
   if (kind === 'poster') {
     if (movie.poster && !current.includes(movie.poster)) candidates.push(movie.poster);
@@ -793,13 +983,27 @@ function setImageFallback(img, movie, kind) {
     if (movie.poster && !current.includes(movie.poster)) candidates.push(movie.poster);
   }
 
-  // Always try a generated SVG last
-  candidates.push(generatedMedia(movie, kind));
+  if (!img.dataset.wikiArtworkTried) {
+    img.dataset.wikiArtworkTried = 'true';
+    fetchWikipediaArtwork(movie, kind).then((url) => {
+      const canReplace = img.classList.contains('generated-media') || !img.complete || img.naturalWidth === 0;
+      if (!url || !img.isConnected || !canReplace) return;
+      artworkCache[cacheKey] = url;
+      saveArtworkCache();
+      img.classList.remove('generated-media');
+      img.dataset.fallbackIndex = '0';
+      img.onerror = () => setImageFallback(img, movie, kind);
+      img.src = url;
+    });
+  }
+
+  // Always use a generated fallback last so failed remote artwork never leaves a blank card.
+  candidates.push(generated);
 
   const index = Number(img.dataset.fallbackIndex || 0);
   if (index < candidates.length) {
     img.dataset.fallbackIndex = index + 1;
-    img.classList.toggle('generated-media', candidates[index].startsWith('data:image/svg+xml'));
+    img.classList.toggle('generated-media', candidates[index] === generated);
     img.onerror = () => setImageFallback(img, movie, kind);
     img.src = candidates[index];
     return;
@@ -807,7 +1011,38 @@ function setImageFallback(img, movie, kind) {
 
   // If all attempts exhausted, use generated media
   img.classList.add('generated-media');
-  img.src = generatedMedia(movie, kind);
+  img.src = generated;
+}
+
+function artworkCacheKey(movie, kind) {
+  return `${kind}:${movie.tmdbId || movie.id}:${movie.title}`;
+}
+
+async function fetchWikipediaArtwork(movie, kind) {
+  const titles = wikipediaTitleCandidates(movie);
+  for (const title of titles) {
+    try {
+      const response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);
+      if (!response.ok) continue;
+      const data = await response.json();
+      const image = data.originalimage?.source || data.thumbnail?.source;
+      if (!image) continue;
+      return kind === 'poster'
+        ? image.replace(/\/\d+px-/, '/500px-')
+        : image.replace(/\/\d+px-/, '/900px-');
+    } catch {}
+  }
+  return '';
+}
+
+function wikipediaTitleCandidates(movie) {
+  const title = movie.title.trim();
+  const year = movie.year ? ` (${movie.year} film)` : '';
+  return [
+    `${title}${year}`,
+    `${title} (film)`,
+    title
+  ];
 }
 
 function mediaUrl(movie, kind) {

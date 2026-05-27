@@ -116,6 +116,22 @@ img {
   to { transform: translate3d(4rem, 2rem, 0) scale(1.15); }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+
+  .scroll-reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 .app-shell {
   display: grid;
   grid-template-columns: var(--sidebar) minmax(0, 1fr);
@@ -690,21 +706,31 @@ body.sidebar-collapsed .nav-badge {
 
 .hero-spotlight {
   position: relative;
-  min-height: min(690px, calc(100vh - 74px));
+  min-height: clamp(520px, calc(100vh - 150px), 600px);
   overflow: hidden;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   isolation: isolate;
 }
 
 .hero-backdrop-img {
   position: absolute;
-  inset: 0;
+  inset: 0 0 0 34%;
   z-index: -1;
-  background-position: center;
+  background-position: center right;
   background-size: cover;
   transform: scale(1.02);
   transition: background-image 360ms ease, transform 700ms ease;
+}
+
+.hero-backdrop-img::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, var(--bg) 0%, rgba(7, 8, 13, 0.98) 18%, rgba(7, 8, 13, 0.86) 34%, rgba(7, 8, 13, 0.46) 54%, rgba(7, 8, 13, 0.1) 82%),
+    linear-gradient(to bottom, rgba(7, 8, 13, 0.18), rgba(7, 8, 13, 0.78));
+  pointer-events: none;
 }
 
 .hero-spotlight:hover .hero-backdrop-img {
@@ -713,15 +739,17 @@ body.sidebar-collapsed .nav-badge {
 
 .hero-vignette {
   position: absolute;
-  inset: 0;
+  inset: 0 auto 0 -52%;
+  width: 152%;
   background:
-    linear-gradient(to top, var(--bg), transparent 38%),
-    radial-gradient(circle at 72% 42%, transparent 0, rgba(7, 8, 13, 0.55) 54%, rgba(7, 8, 13, 0.95) 100%);
+    linear-gradient(90deg, var(--bg) 0%, rgba(7, 8, 13, 0.98) 32%, rgba(7, 8, 13, 0.88) 50%, rgba(7, 8, 13, 0.42) 70%, rgba(7, 8, 13, 0.12) 100%),
+    linear-gradient(to top, var(--bg) 0%, rgba(7, 8, 13, 0.68) 18%, transparent 48%),
+    radial-gradient(circle at 88% 42%, transparent 0, rgba(7, 8, 13, 0.34) 58%, rgba(7, 8, 13, 0.86) 100%);
 }
 
 .hero-content {
-  width: min(760px, calc(100% - 48px));
-  margin: 0 0 78px 42px;
+  width: min(650px, 48vw);
+  margin: 0 0 34px 52px;
   animation: heroIn 420ms ease both;
   position: relative;
   z-index: 2;
@@ -770,11 +798,11 @@ body.sidebar-collapsed .nav-badge {
 }
 
 .hero-title {
-  margin: 14px 0 10px;
-  font-size: clamp(46px, 6vw, 92px);
+  margin: 0 0 10px;
+  font-size: clamp(42px, 5vw, 76px);
   line-height: 0.98;
   letter-spacing: 0;
-  max-width: 720px;
+  max-width: 650px;
   overflow-wrap: anywhere;
 }
 
@@ -814,15 +842,15 @@ body.sidebar-collapsed .nav-badge {
 }
 
 .hero-desc {
-  width: min(640px, 100%);
-  margin: 18px 0 0;
+  width: min(600px, 100%);
+  margin: 16px 0 0;
   color: #d8dde7;
-  font-size: 18px;
+  font-size: 17px;
   line-height: 1.55;
 }
 
 .hero-actions {
-  margin-top: 26px;
+  margin-top: 22px;
 }
 
 .btn-play-trailer,
@@ -869,8 +897,8 @@ body.sidebar-collapsed .nav-badge {
 
 .hero-dots {
   position: absolute;
-  left: 42px;
-  bottom: 32px;
+  left: 52px;
+  bottom: 24px;
   display: flex;
   gap: 8px;
 }
@@ -905,6 +933,20 @@ body.sidebar-collapsed .nav-badge {
 
 .carousel-section {
   min-width: 0;
+}
+
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 520ms cubic-bezier(.2, .8, .2, 1),
+    transform 520ms cubic-bezier(.2, .8, .2, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.scroll-reveal.reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .section-header,
@@ -994,7 +1036,6 @@ body.sidebar-collapsed .nav-badge {
   min-width: 0;
   scroll-snap-align: start;
   cursor: pointer;
-  animation: cardIn 300ms ease both;
 }
 
 @keyframes cardIn {
@@ -1578,8 +1619,8 @@ body.modal-open {
   }
 
   .hero-content {
-    margin-left: 24px;
-    margin-bottom: 70px;
+    width: min(620px, calc(100% - 48px));
+    margin: 0 0 52px 24px;
   }
 
   .hero-dots {
@@ -1624,12 +1665,36 @@ body.modal-open {
 
 @media (max-width: 640px) {
   .hero-spotlight {
-    min-height: 620px;
+    min-height: 560px;
+    align-items: flex-end;
+  }
+
+  .hero-backdrop-img {
+    inset: 0;
+    background-position: center;
+  }
+
+  .hero-backdrop-img::before {
+    background:
+      linear-gradient(to top, var(--bg) 0%, rgba(7, 8, 13, 0.86) 42%, rgba(7, 8, 13, 0.18) 100%),
+      linear-gradient(90deg, rgba(7, 8, 13, 0.92), rgba(7, 8, 13, 0.28));
+  }
+
+  .hero-vignette {
+    inset: 0;
+    width: auto;
+    background:
+      linear-gradient(to top, var(--bg) 0%, rgba(7, 8, 13, 0.9) 36%, rgba(7, 8, 13, 0.18) 100%),
+      linear-gradient(90deg, rgba(7, 8, 13, 0.94), rgba(7, 8, 13, 0.34));
   }
 
   .hero-content {
     width: calc(100% - 32px);
-    margin: 0 16px 62px;
+    margin: 0 16px 56px;
+  }
+
+  .hero-title {
+    font-size: clamp(38px, 12vw, 58px);
   }
 
   .hero-desc {
