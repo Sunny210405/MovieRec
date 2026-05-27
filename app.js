@@ -51,7 +51,6 @@ const els = {
   heroMatch: $('hero-match'),
   heroGenres: $('hero-genres'),
   heroDesc: $('hero-desc'),
-  heroProviders: $('hero-providers'),
   heroDots: $('hero-dots'),
   heroWatchlistBtn: $('hero-watchlist-btn'),
   heroWatchlistText: $('hero-watchlist-text'),
@@ -240,6 +239,8 @@ function bindEvents() {
       contentModeSelector.querySelectorAll('.mode-toggle-btn').forEach((b) => {
         b.classList.toggle('active', b.dataset.mode === mode);
       });
+      contentModeSelector.classList.toggle('adult-active', !state.kidsMode);
+      contentModeSelector.classList.toggle('kids-active', state.kidsMode);
       
       render();
     });
@@ -249,6 +250,8 @@ function bindEvents() {
     if (activeBtn) {
       activeBtn.classList.add('active');
     }
+    contentModeSelector.classList.toggle('adult-active', !state.kidsMode);
+    contentModeSelector.classList.toggle('kids-active', state.kidsMode);
   }
 
   els.genreChips.addEventListener('click', (event) => {
@@ -393,7 +396,6 @@ function renderHero() {
   els.heroMatch.textContent = `${match}% match`;
   els.heroGenres.innerHTML = movie.genres.map((genre) => `<span>${genre}</span>`).join('');
   els.heroDesc.textContent = movie.description;
-  els.heroProviders.innerHTML = movie.watchProviders.map(providerTag).join('');
   updateHeroWatchlist(movie.id);
 
   els.heroDots.innerHTML = picks.map((_, index) => (
